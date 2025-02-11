@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const companySchema = new mongoose.Schema({
   name: {
     type: String,
+    unique: true,
     required: [true, "Company name is required"],
   },
   logo_url: {

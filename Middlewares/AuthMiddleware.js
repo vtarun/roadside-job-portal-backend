@@ -2,7 +2,7 @@ const User = require("../Models/UserModel");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
-module.exports.userVerification = (req, res) => {
+module.exports.userVerification = async (req, res, next) => {
   const authHeader = req.headers['authorization'];
 
   if (!authHeader) {
@@ -13,13 +13,18 @@ module.exports.userVerification = (req, res) => {
   if (!token) {
     return res.json({ status: false })
   }
-  jwt.verify(token, process.env.TOKEN_KEY, async (err, data) => {
-    if (err) {
-     return res.json({ status: false })
-    } else {
-      const user = await User.findOne({ email: data.email });
-      if (user) return res.json({ status: true, user: user.username })
-      else return res.json({ status: false })
+  try{
+
+    const decoded = jwt.verify(token, process.env.TOKEN_KEY);
+    const user = await User.findOne({ email: decoded.email });
+
+    if (!user) {
+      return res.status(404).json({ status: false, message: "User not found" });
     }
-  })
+
+    req.user = user;
+    next();
+  } catch(err){
+    return res.status(403).json({ status: false, message: "Invalid token" });
+  }
 }

@@ -4,12 +4,12 @@ const { createSecretToken } = require("../util/SecretToken");
 
 module.exports.Signup = async (req, res, next) => {
   try {
-    const { email, password, username, createdAt } = req.body;
+    const { email, password, firstname, lastname } = req.body;
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.json({ message: "User already exists" });
     }
-    const user = await User.create({ email, password, username, createdAt });
+    const user = await User.create({ email, password, firstname, lastname });
     const token = createSecretToken(user.email);
     // res.cookie("token", token, {
     //   withCredentials: true,
@@ -19,6 +19,7 @@ module.exports.Signup = async (req, res, next) => {
       email: user.email,
       firstname: user.firstname,
       lastname: user.lastname,
+      role: user.role,
       createdAt: user.createdAt,
     };
 
@@ -45,8 +46,15 @@ module.exports.Login = async (req, res, next) => {
     if (!auth) {
       return res.json({message:'Incorrect password or email' }) 
     }
+    const userResponse = {
+      email: user.email,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      role: user.role,
+      createdAt: user.createdAt,
+    };
      const token = createSecretToken(user.email);
-     res.status(201).json({ message: "User logged in successfully", success: true, token });
+     res.status(201).json({ message: "User logged in successfully", success: true, token, user: userResponse });
      next()
   } catch (error) {
     console.error(error);

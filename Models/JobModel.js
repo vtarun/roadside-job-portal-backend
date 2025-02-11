@@ -6,7 +6,7 @@ const jobSchema = new mongoose.Schema({
     default: Date.now, // Automatically set to the current timestamp
   },
   recruiter_id: {
-    type: string,
+    type: String,
     required: [true, "Recruiter ID is required"],
   },
   company_id: {
