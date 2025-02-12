@@ -19,7 +19,6 @@ module.exports.Signup = async (req, res, next) => {
       email: user.email,
       firstname: user.firstname,
       lastname: user.lastname,
-      role: user.role,
       createdAt: user.createdAt,
     };
 
