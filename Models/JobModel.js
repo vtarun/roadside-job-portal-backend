@@ -10,12 +10,17 @@ const jobSchema = new mongoose.Schema({
     required: [true, "Recruiter ID is required"],
   },
   company_id: {
-    type: mongoose.Schema.Types.Number,
+    type: mongoose.Schema.Types.ObjectId,
     required: [true, "Company ID is required"],
-    ref: "Companies", // Reference to the parent jobs table
+    ref: "Companies", // Reference to the parent Companies table
   },
   title: {
     type: String,
+    required: [true, "Title is required"],
+  },
+  location: {
+    type: String,
+    required: [true, "Location is required"],
   },
   description: {
     type: String,

@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const multer = require("multer");
+const path = require("path");
 const app = express();
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
@@ -31,8 +33,11 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Static folder for uploads
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 app.use("/auth", authRoutes);
-app.use("/api", userRoutes)
+app.use("/profile", userRoutes)
 app.use("/jobs", jobRoutes);
 app.use("/companies", companyRoutes);
 

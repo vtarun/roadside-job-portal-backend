@@ -17,8 +17,10 @@ module.exports.Signup = async (req, res, next) => {
     // });
     const userResponse = {
       email: user.email,
+      user_id: user._id,
       firstname: user.firstname,
       lastname: user.lastname,
+      role: user.role,
       createdAt: user.createdAt,
     };
 
@@ -47,6 +49,7 @@ module.exports.Login = async (req, res, next) => {
     }
     const userResponse = {
       email: user.email,
+      user_id: user._id,
       firstname: user.firstname,
       lastname: user.lastname,
       role: user.role,
