@@ -10,7 +10,7 @@ const authRoutes = require("./Routes/authRoute");
 const jobRoutes = require("./Routes/jobRoutes");
 const companyRoutes = require("./Routes/companyRoutes");
 const userRoutes = require("./Routes/userRoutes");
-// const savedJobRoutes = require("./routes/savedJobRoutes");
+const savedJobRoutes = require("./Routes/savedJobRoutes");
 const { MONGO_URL, PORT, ORIGIN  } = process.env;
 
 mongoose
@@ -39,6 +39,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/auth", authRoutes);
 app.use("/profile", userRoutes)
 app.use("/jobs", jobRoutes);
+app.use("/saved-jobs", savedJobRoutes)
 app.use("/companies", companyRoutes);
 
 app.listen(PORT, () => {

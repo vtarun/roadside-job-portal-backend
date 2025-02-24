@@ -1,13 +1,16 @@
 const mongoose = require("mongoose");
 
 const savedjobSchema = new mongoose.Schema({
-  job_id: {
-    type: mongoose.Schema.Types.Number,
+  job_id: [{
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: "Jobs",
-  },
+    ref: "Job",
+  }],
   user_id: {
-    type: String
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
+    unique: true, // Ensure one entry per user
   },
   created_at: {
     type: Date,

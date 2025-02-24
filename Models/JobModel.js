@@ -12,7 +12,7 @@ const jobSchema = new mongoose.Schema({
   company_id: {
     type: mongoose.Schema.Types.ObjectId,
     required: [true, "Company ID is required"],
-    ref: "Companies", // Reference to the parent Companies table
+    ref: "Company", // Reference to the parent Companies table
   },
   title: {
     type: String,
@@ -37,4 +37,4 @@ const jobSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Job", jobSchema);
+module.exports = mongoose.models.Job || mongoose.model("Job", jobSchema);

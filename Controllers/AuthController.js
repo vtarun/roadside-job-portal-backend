@@ -21,6 +21,7 @@ module.exports.Signup = async (req, res, next) => {
       firstname: user.firstname,
       lastname: user.lastname,
       role: user.role,
+      profilePic: user.profilePic,
       createdAt: user.createdAt,
     };
 
@@ -53,6 +54,7 @@ module.exports.Login = async (req, res, next) => {
       firstname: user.firstname,
       lastname: user.lastname,
       role: user.role,
+      profilePic: user.profilePic,
       createdAt: user.createdAt,
     };
      const token = createSecretToken(user.email);

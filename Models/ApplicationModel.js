@@ -6,7 +6,7 @@ const applicationSchema = new mongoose.Schema({
     default: Date.now, // Automatically set to the current timestamp
   },
   job_id: {
-    type: mongoose.Schema.Types.Number,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: "Jobs", // Reference to the parent jobs table
   },
@@ -17,7 +17,7 @@ const applicationSchema = new mongoose.Schema({
   status: {
     type: String,
     required: [true, "Status is required"],
-    enum: ["applied", "in-review", "shortlisted", "rejected", "hired"], // Optional: predefined statuses
+    enum: ["applied", "interviewing", "rejected", "hired"], // Optional: predefined statuses
     default: "applied", // Default status
   },
   resume: {
