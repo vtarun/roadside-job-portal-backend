@@ -4,10 +4,10 @@ const { userVerification } = require("../Middlewares/AuthMiddleware");
 const router = require("express").Router();
 
 // Save a Job (for a candidate)
-router.post("/post-job",  postJob);
-router.get("/get-jobs", getAllJobs);
-router.get("/get-job/:job_id", getJob);
-router.delete("/delete-job/:job_id", getJob);
-router.put("/close-job/:job_id", updateJobStatus)
+router.post("/post-job", userVerification,  postJob);
+router.get("/get-jobs", userVerification, getAllJobs);
+router.get("/get-job/:job_id", userVerification, getJob);
+router.delete("/delete-job/:job_id", userVerification, getJob);
+router.put("/update-job/:job_id", userVerification, updateJobStatus)
 
 module.exports = router;

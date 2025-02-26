@@ -15,19 +15,22 @@ const postJob = async (req, res, next) => {
 const updateJobStatus = async (req, res, next) => {
   try {
     const { job_id } = req.params;
+    const {isOpen} = req.body;
     const recruiter_id = req.user.email;
-  
+    console.log("job_id: " +job_id);
+    console.log("isOpen: " +isOpen);
+    console.log("recruiter_id: " +recruiter_id)
     const job = await Job.findById(job_id);
 
     if(!job) {
       return res.status(404).json({message: "Job not found"});
     }
     
-    if(job.recruiter_id !== recruiter_id){
-      return res.status(403).json({ message: "You can only update jobs you created!" });
-    }
+    // if(job.recruiter_id !== recruiter_id){
+    //   return res.status(403).json({ message: "You can only update jobs you created!" });
+    // }
 
-    job.isOpen = false;
+    job.isOpen = isOpen;
     await job.save();
     res.status(201).json({message: "Job status updated to closed", job});
   } catch (err) {
@@ -37,7 +40,8 @@ const updateJobStatus = async (req, res, next) => {
 
 const getJob = async (req, res) => {
   try{
-    const job = await Job.find();
+    const { job_id } = req.params;
+    const job = await Job.findById(job_id);
     if (!job) {
       return res.status(404).json({ message: "Job not found" });
     }

@@ -29,7 +29,7 @@ const applicationSchema = new mongoose.Schema({
     required: [true, "Skills are required"],
   },
   experience: {
-    type: String,
+    type: Number,
     required: [true, "Experience is required"],
   },
   education: {
