@@ -15,10 +15,7 @@ const applicationRoutes = require("./Routes/applicationRoutes");
 const { MONGO_URL, PORT, ORIGIN  } = process.env;
 
 mongoose
-  .connect(MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(MONGO_URL)
   .then(() => console.log("MongoDB is  connected successfully"))
   .catch((err) => console.error(err));
 
@@ -38,11 +35,7 @@ app.use(express.json());
 // Static folder for uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/auth", authRoutes);
-app.use("/profile", userRoutes)
-app.use((req, res, next) => {
-  console.log(`Received request: ${req.method} ${req.url} from ${req.ip}`);
-  next();
-});
+app.use("/profile", userRoutes);
 app.use("/jobs", jobRoutes);
 app.use("/saved-jobs", savedJobRoutes)
 app.use("/companies", companyRoutes);
