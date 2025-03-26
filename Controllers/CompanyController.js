@@ -12,16 +12,13 @@ const createCompany = async (req, res) => {
     // Fetch all companies after adding the new one
     const allCompanies = await Company.find();
 
-    res.status(201).json({
-      message: "Company created successfully",
-      companies: allCompanies, // Send all companies in response
-    });
+    res.status(201).json(allCompanies);
   } catch (err) {
     res.status(500).json({ message: "Error creating company", error: err.message });
   }
 };
 
-const getCompany = async (req, res) => {
+const getAllCompanies = async (req, res) => {
   try {
     const companies = await Company.find(); // Fetch all companies
     res.status(200).json(companies);
@@ -30,4 +27,4 @@ const getCompany = async (req, res) => {
   }
 }
 
-module.exports = {createCompany, getCompany}
+module.exports = {createCompany, getAllCompanies}

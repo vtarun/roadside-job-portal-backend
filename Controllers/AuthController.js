@@ -7,7 +7,7 @@ module.exports.Signup = async (req, res, next) => {
     const { email, password, firstname, lastname } = req.body;
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.json({ message: "User already exists" });
+      return res.status(409).json({ message: "User already exists", success: false });
     }
     const user = await User.create({ email, password, firstname, lastname });
     const token = createSecretToken(user.email);
@@ -30,7 +30,11 @@ module.exports.Signup = async (req, res, next) => {
       .json({ message: "User signed in successfully", success: true, user: userResponse, token });
     next();
   } catch (error) {
-    console.error(error);
+    console.error("Error during signup:", error);
+    res.status(500).json({ 
+      message: "An error occurred during signup", 
+      success: false 
+    });
   }
 };
 

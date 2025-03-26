@@ -2,9 +2,10 @@ const User = require("../Models/UserModel");
 
 const updateUserRole = async (req, res) => {
 	try{
-		const {email, role} = req.body;
+		const {role} = req.body;
+		const {email} = req.user;
 		if(!email || !role){
-			return res.status(400).json({message: "Email and role are required."});
+			return res.status(400).json({message: "Id and role are required."});
 		}
 
 		const user = await User.findOneAndUpdate({email}, {role}, {new: true});

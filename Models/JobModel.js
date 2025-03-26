@@ -6,8 +6,9 @@ const jobSchema = new mongoose.Schema({
     default: Date.now, // Automatically set to the current timestamp
   },
   recruiter_id: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: [true, "Recruiter ID is required"],
+    ref: "User"
   },
   company_id: {
     type: mongoose.Schema.Types.ObjectId,
@@ -35,6 +36,10 @@ const jobSchema = new mongoose.Schema({
     required: [true, "Experience is required"],
     default: true
   },
+  applications: [{ 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "Application"
+  }],
 });
 
 module.exports = mongoose.models.Job || mongoose.model("Job", jobSchema);

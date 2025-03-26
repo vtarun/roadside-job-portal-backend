@@ -1,7 +1,7 @@
 const router = require("express").Router();
 
 const { userVerification } = require("../Middlewares/AuthMiddleware");
-const { createCompany, getCompany } = require("../Controllers/CompanyController");
+const { createCompany, getAllCompanies } = require("../Controllers/CompanyController");
 const multer = require("multer");
 const path = require("path");
 
@@ -28,7 +28,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({ storage, fileFilter });
 
 // Get all companies
-router.get("/get-companies", getCompany );
+router.get("/get-companies", getAllCompanies );
 
 // Create Company with File Upload
 router.post("/create", upload.single("logo"), createCompany);

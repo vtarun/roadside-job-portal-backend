@@ -1,10 +1,11 @@
 const Job = require("../models/JobModel");
+const Application = require("../models/ApplicationModel");
 
 const postJob = async (req, res, next) => {
   const { recruiter_id, company_id, title, description,location, requirements } = req.body;
 
   try {
-    const newJob = new Job({ recruiter_id, company_id, title, description, requirements,location });
+    const newJob = new Job({ recruiter_id, company_id, title, description, requirements, location });
     await newJob.save();
     res.status(201).json({message: "Job posted successfully"});
   } catch (err) {
@@ -16,19 +17,16 @@ const updateJobStatus = async (req, res, next) => {
   try {
     const { job_id } = req.params;
     const {isOpen} = req.body;
-    const recruiter_id = req.user.email;
-    console.log("job_id: " +job_id);
-    console.log("isOpen: " +isOpen);
-    console.log("recruiter_id: " +recruiter_id)
+    const recruiter_id = req.user._id;
     const job = await Job.findById(job_id);
 
     if(!job) {
       return res.status(404).json({message: "Job not found"});
     }
-    
-    // if(job.recruiter_id !== recruiter_id){
-    //   return res.status(403).json({ message: "You can only update jobs you created!" });
-    // }
+
+    if(job.recruiter_id !== recruiter_id){
+      return res.status(403).json({ message: "You can only update jobs you created!" });
+    }
 
     job.isOpen = isOpen;
     await job.save();
@@ -38,30 +36,39 @@ const updateJobStatus = async (req, res, next) => {
   }
 };
 
-const getJob = async (req, res) => {
+const getJobById = async (req, res) => {
   try{
     const { job_id } = req.params;
-    const job = await Job.findById(job_id);
-    if (!job) {
-      return res.status(404).json({ message: "Job not found" });
-    }
+    const job = await Job.findById(job_id)
+      .populate({
+          path: "applications",  // Reference to applications
+          populate: { path: "candidate_id" } // Populate candidate details
+      })
+      .populate({
+          path: "company_id", // Populate company details
+          select: "name logo_url", // Select required fields
+      })
+      .exec();
+      if (!job) {
+        return res.status(404).json({ message: "Job not found" });
+      }
 
-    return res.status(200).json({ message: "Jobs found successfully", job });
+      return res.status(200).json({ message: "Jobs found successfully", job });
   }catch(err) {
     res.status(500).json({ message: "Error finding job", error: err.message });
   }
 }
 
 const getAllJobs = async (req, res) => {
-  const { location, company_id, title } = req.query;
+  const { location, company_id, search } = req.query;
   let filters = {};
 
   if (location) {
     filters.location = location; // Match location
   }
 
-  if(title) {
-    filters.title = title; //Match title
+  if(search) {
+    filters.title = { $regex: search, $options: "i" };
   }
 
   if (company_id) {
@@ -69,7 +76,7 @@ const getAllJobs = async (req, res) => {
   }
 
   try {
-    const jobs = await Job.find(filters);
+    const jobs = await Job.find(filters).populate('company_id');
     if (!jobs) {
       return res.status(404).json({ message: "Job not found" });
     }
@@ -98,6 +105,27 @@ const deleteJob = async (req, res) => {
   }
 };
 
+const getAppliedJobs = async (req, res) => {
+  try{
+    const { _id : candidate_id } = req.user;
+    const appliedJobs = await Application.find({candidate_id}).populate("job_id").lean();
+
+    res.status(200).json({ success: true, jobs: appliedJobs });
+  }catch(error){
+    res.status(500).json({ message: "Error fetching job", error: error.message });
+  }
+}; 
+
+const getCreatedJobs = async (req, res) => {
+  try{
+    const { _id } = req.user;
+    const createdJobs = await Job.find({recruiter_id: _id});
+    res.status(200).json({ success: true, jobs: appliedJobs });
+  }catch(error){
+    res.status(500).json({ message: "Error fetching job", error: error.message });
+  }
+};
 
 
-module.exports = {postJob, getAllJobs, deleteJob, updateJobStatus, getJob};
+
+module.exports = {postJob, getAllJobs, deleteJob, updateJobStatus, getJobById, getAppliedJobs, getCreatedJobs};

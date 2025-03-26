@@ -11,8 +11,9 @@ const applicationSchema = new mongoose.Schema({
     ref: "Jobs", // Reference to the parent jobs table
   },
   candidate_id: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,     
     required: [true, "Candidate ID is required"],
+    ref: "User",
   },
   status: {
     type: String,
