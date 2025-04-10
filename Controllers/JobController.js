@@ -2,7 +2,7 @@ const Job = require("../models/JobModel");
 const Application = require("../models/ApplicationModel");
 
 const postJob = async (req, res, next) => {
-  const { recruiter_id, company_id, title, description,location, requirements } = req.body;
+  const { recruiter_id, company_id, title, description, location, requirements } = req.body;
 
   try {
     const newJob = new Job({ recruiter_id, company_id, title, description, requirements, location });
@@ -81,6 +81,9 @@ const getAllJobs = async (req, res) => {
       return res.status(404).json({ message: "Job not found" });
     }
 
+    const savedJobs = await SavedJob.findOne({ user_id });
+    const savedJobsId = new Set()
+
     return res.status(200).json({ message: "Jobs found successfully", jobs });
   } catch (err) {
     return res.status(500).json({ message: "Error saving job", error: err.message });
@@ -107,12 +110,12 @@ const deleteJob = async (req, res) => {
 
 const getAppliedJobs = async (req, res) => {
   try{
-    const { _id : candidate_id } = req.user;
-    const appliedJobs = await Application.find({candidate_id}).populate("job_id").lean();
-
+    const { _id } = req.user;
+    const appliedJobs = await Application.find({candidate_id: _id}).populate("job_id");
+    console.log("Applied Jobs Result:", appliedJobs);
     res.status(200).json({ success: true, jobs: appliedJobs });
   }catch(error){
-    res.status(500).json({ message: "Error fetching job", error: error.message });
+    res.status(500).json({ message: "Error fetching applied jobs", error: error.message });
   }
 }; 
 
@@ -120,9 +123,9 @@ const getCreatedJobs = async (req, res) => {
   try{
     const { _id } = req.user;
     const createdJobs = await Job.find({recruiter_id: _id});
-    res.status(200).json({ success: true, jobs: appliedJobs });
+    res.status(200).json({ success: true, jobs: createdJobs });
   }catch(error){
-    res.status(500).json({ message: "Error fetching job", error: error.message });
+    res.status(500).json({ message: "Error fetching created jobs", error: error.message });
   }
 };
 
