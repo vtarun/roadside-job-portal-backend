@@ -10,7 +10,12 @@ const applyForJob = async (req, res) => {
 		if(!job) {
 			return res.status(404).json({message: "Job not found"});
 		}
-		const existingApplication = await Application.findOne({job_id: new mongoose.Types.ObjectId(job_id), candidate_id: new mongoose.Types.ObjectId(candidate_id)});
+		
+		const existingApplication = await Application.findOne({
+			job_id: new mongoose.Types.ObjectId(job_id), 
+			candidate_id: new mongoose.Types.ObjectId(candidate_id)
+		});
+
 		if(existingApplication) {
 			return res.status(400).json({message: "You have already applied for this job"});
 		}
@@ -46,7 +51,7 @@ const applyForJob = async (req, res) => {
 }
 
 const updateApplicationStatus = async (req, res) => {
-
+	
 }
 
 const getApplications = async (req, res) => {
