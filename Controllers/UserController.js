@@ -73,4 +73,37 @@ const updateUser = async (req, res) => {
 	}
 }
 
-module.exports = { updateUser, updateUserRole };
+const updateSavedJobs = async (req, res) => {
+	const { jobId }= req.params;
+
+	if(!jobId){
+		return res.status(400).json({message: "jobId is required."});
+	}
+
+	try{
+
+		const { _id } = req.user;
+
+		const user = await User.findOne({_id});
+		const savedJobs = user.savedJobs;
+
+		const jobObjectId = new mongoose.Types.ObjectId(jobId);
+	    const savedJobIndex = user.savedJobs.findIndex(id => id.equals(jobObjectId));
+
+		if(savedJobIndex === -1) {
+			user.savedJobs.push(jobObjectId);
+		}else {
+			user.savedJobs.splice(savedJobIndex, 1);
+		}
+
+		await user.save();
+
+		res.json({ message: "Job saved successfully", jobs: user.savedJobs});
+	}catch (error) {
+   	 	console.error(error);
+    	res.status(500).json({ message: "Error updating saved jobs", error: error.message });
+  	}
+
+}
+
+module.exports = { updateUser, updateUserRole, updateSavedJobs };

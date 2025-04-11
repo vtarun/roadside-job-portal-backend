@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: new Date(),
   },
+  savedJobs: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Job"
+  }]
 });
 
 userSchema.pre("save", async function () {
