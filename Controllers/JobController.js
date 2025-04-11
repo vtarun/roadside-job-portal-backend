@@ -93,18 +93,20 @@ const getAllJobs = async (req, res) => {
 const deleteJob = async (req, res) => {
   try {
     const { job_id } = req.params; // Extract job_id from URL params
-    const job = await Job.findById(job_id);
+    
     const recruiter_id = req.user._id;
+
+    const job = await Job.findById(job_id);
+
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
     
     if(job.recruiter_id !== recruiter_id){
       return res.status(403).json({ message: "You can only delete job you created!" });
     }
 
-    const job = await Job.findOneAndDelete({ _id: job_id });
-
-    if (!job) {
-      return res.status(404).json({ message: "Job not found" });
-    }
+    await Job.findOneAndDelete({ _id: job_id });
 
     await User.updateMany(
       { savedJobs: job_id },
