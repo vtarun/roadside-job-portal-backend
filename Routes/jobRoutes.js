@@ -1,4 +1,4 @@
-const { postJob, deleteJob, getAllJobs, updateJobStatus, getJobById, getAppliedJobs, getCreatedJobs } = require("../Controllers/JobController");
+const { postJob, deleteJob, getAllJobs, updateJobStatus, getJobById, getAppliedJobs, getCreatedJobs, getSavedJobs } = require("../Controllers/JobController");
 const { userVerification } = require("../Middlewares/AuthMiddleware");
 
 const router = require("express").Router();
@@ -9,6 +9,7 @@ router.get("/created", userVerification, getCreatedJobs);
 router.get("/applied", userVerification, getAppliedJobs);
 router.get("/get-job/:job_id", userVerification, getJobById);
 router.delete("/delete-job/:job_id", userVerification, deleteJob);
-router.put("/update-job/:job_id", userVerification, updateJobStatus)
+router.put("/update-job/:job_id", userVerification, updateJobStatus);
+router.get("/saved-jobs", userVerification, getSavedJobs);
 
 module.exports = router;

@@ -1,4 +1,5 @@
 const User = require("../Models/UserModel");
+const mongoose = require("mongoose");
 
 const updateUserRole = async (req, res) => {
 	try{
@@ -21,6 +22,7 @@ const updateUserRole = async (req, res) => {
 			role: user.role,
       		profilePic: user.profilePic,
 			createdAt: user.createdAt,
+			savedJobs: user.savedJobs
 		  };
 		res.json({ message: "Role updated successfully", user: userResponse });
 
@@ -98,12 +100,11 @@ const updateSavedJobs = async (req, res) => {
 
 		await user.save();
 
-		res.json({ message: "Job saved successfully", jobs: user.savedJobs});
+		res.json({ message: "Job saved successfully", savedJobs: user.savedJobs});
 	}catch (error) {
    	 	console.error(error);
     	res.status(500).json({ message: "Error updating saved jobs", error: error.message });
   	}
-
 }
 
 module.exports = { updateUser, updateUserRole, updateSavedJobs };

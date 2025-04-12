@@ -23,6 +23,7 @@ module.exports.Signup = async (req, res, next) => {
       role: user.role,
       profilePic: user.profilePic,
       createdAt: user.createdAt,
+      savedJobs: user.savedJobs
     };
 
     res
@@ -60,6 +61,7 @@ module.exports.Login = async (req, res, next) => {
       role: user.role,
       profilePic: user.profilePic,
       createdAt: user.createdAt,
+      savedJobs: user.savedJobs
     };
      const token = createSecretToken(user.email);
      res.status(201).json({ message: "User logged in successfully", success: true, token, user: userResponse });

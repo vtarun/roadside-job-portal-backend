@@ -4,7 +4,7 @@ const router = require("express").Router();
 
 router.put("/user", userVerification, updateUserRole);
 router.post("/user", userVerification, updateUser);
-router.post("/saved-jobs/:jobId", userVerification, updateSavedJobs);
+router.put("/saved-jobs/:jobId", userVerification, updateSavedJobs);
 
 
 module.exports = router;

@@ -1,4 +1,5 @@
 const Job = require("../models/JobModel");
+const User = require("../Models/UserModel");
 const Application = require("../models/ApplicationModel");
 
 const postJob = async (req, res, next) => {
@@ -24,7 +25,7 @@ const updateJobStatus = async (req, res, next) => {
       return res.status(404).json({message: "Job not found"});
     }
 
-    if(job.recruiter_id !== recruiter_id){
+    if(!job.recruiter_id.equals(recruiter_id)){
       return res.status(403).json({ message: "You can only update jobs you created!" });
     }
 
@@ -81,9 +82,6 @@ const getAllJobs = async (req, res) => {
       return res.status(404).json({ message: "Job not found" });
     }
 
-    const savedJobs = await SavedJob.findOne({ user_id });
-    const savedJobsId = new Set()
-
     return res.status(200).json({ message: "Jobs found successfully", jobs });
   } catch (err) {
     return res.status(500).json({ message: "Error saving job", error: err.message });
@@ -102,7 +100,7 @@ const deleteJob = async (req, res) => {
       return res.status(404).json({ message: "Job not found" });
     }
     
-    if(job.recruiter_id !== recruiter_id){
+    if(!job.recruiter_id.equals(recruiter_id)){
       return res.status(403).json({ message: "You can only delete job you created!" });
     }
 
@@ -135,13 +133,28 @@ const getAppliedJobs = async (req, res) => {
 const getCreatedJobs = async (req, res) => {
   try{
     const { _id } = req.user;
-    const createdJobs = await Job.find({recruiter_id: _id});
+    const createdJobs = await Job.find({recruiter_id: _id}).populate('company_id');
     res.status(200).json({ success: true, jobs: createdJobs });
   }catch(error){
     res.status(500).json({ message: "Error fetching created jobs", error: error.message });
   }
 };
 
+const getSavedJobs = async (req, res) => {
+  try{
+    const { _id } = req.user;
+
+    const {savedJobs} = User.findById(_id).populate('savedJobs');
+
+    console.log(savedJobs.savedJobs);
+
+    res.json({message: "Fetched saved jobs" , savedJobs});
+  }catch(error){
+
+  }
+}
 
 
-module.exports = {postJob, getAllJobs, deleteJob, updateJobStatus, getJobById, getAppliedJobs, getCreatedJobs};
+
+
+module.exports = {postJob, getAllJobs, deleteJob, updateJobStatus, getJobById, getAppliedJobs, getCreatedJobs, getSavedJobs};
