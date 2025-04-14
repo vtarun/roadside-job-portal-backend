@@ -21,8 +21,8 @@ const upload = multer({ storage });
 
 // Apply for a job (with file upload)
 router.post("/apply-job", userVerification, upload.single("resume"), applyForJob);
-router.put('/update-application', userVerification, updateApplicationStatus);
-router.get('/get-applications', userVerification, getApplications);
+router.put('/update-application/:id', userVerification, updateApplicationStatus);
+// router.get('/get-applications', userVerification, getApplications);
 
 module.exports = router;
 

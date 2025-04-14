@@ -51,7 +51,22 @@ const applyForJob = async (req, res) => {
 }
 
 const updateApplicationStatus = async (req, res) => {
-	
+	const { id } = req. params;
+	const { status } = req.body;
+	const recruiter_id = req.user._id;
+	try{
+		const jobs = await Job.find({recruiter_id: new mongoose.Types.ObjectId(recruiter_id)});
+		if(!jobs.applications.includes(id)){
+			return res.status(401).json({message: "Not authorize to update application status."});
+		}
+		const updatedApplication = await Application.findByIdAndUpdate(id, {status}, {new: true});
+		if (!updatedApplication) {
+	      return res.status(404).send({ error: "Application not found" });
+	    }
+		res.status(201).json({message: "Application updated successfully", application: updatedApplication})
+	}catch(err){
+		res.status(500).json({ message: "Error fetching applications", error: err?.message });
+	}
 }
 
 const getApplications = async (req, res) => {
