@@ -122,8 +122,15 @@ const deleteJob = async (req, res) => {
 const getAppliedJobs = async (req, res) => {
   try{
     const { _id } = req.user;
-    const appliedJobs = await Application.find({candidate_id: _id}).populate("job_id");
-    console.log("Applied Jobs Result:", appliedJobs);
+    console.log( _id, req.user);
+    const appliedJobs = await Application.find({candidate_id: _id})
+      .populate({
+        path: "job_id",
+        populate: {
+          path: "company_id", // Nested populate
+          select: "name", // Only get the company name
+        },
+      });
     res.status(200).json({ success: true, jobs: appliedJobs });
   }catch(error){
     res.status(500).json({ message: "Error fetching applied jobs", error: error.message });
@@ -142,15 +149,23 @@ const getCreatedJobs = async (req, res) => {
 
 const getSavedJobs = async (req, res) => {
   try{
+
     const { _id } = req.user;
-
-    const {savedJobs} = User.findById(_id).populate('savedJobs');
-
-    console.log(savedJobs.savedJobs);
-
+    console.log(req.user);
+    const {savedJobs} = await User.findById(_id)
+      .populate({
+        path: "savedJobs",
+        populate: {
+          path: "company_id", // Nested populate
+          select: "name logo_url", // Only get the company name
+        },
+      });
+    if (!savedJobs) {
+      return res.status(404).json({ message: "User not found" });
+    }
     res.json({message: "Fetched saved jobs" , savedJobs});
   }catch(error){
-
+    res.status(500).json({ message: "Error fetching saved jobs", error: error.message });
   }
 }
 

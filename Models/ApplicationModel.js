@@ -8,7 +8,7 @@ const applicationSchema = new mongoose.Schema({
   job_id: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: "Jobs", // Reference to the parent jobs table
+    ref: "Job", // Reference to the parent jobs table
   },
   candidate_id: {
     type: mongoose.Schema.Types.ObjectId,     

@@ -56,7 +56,8 @@ const updateApplicationStatus = async (req, res) => {
 	const recruiter_id = req.user._id;
 	try{
 		const jobs = await Job.find({recruiter_id: new mongoose.Types.ObjectId(recruiter_id)});
-		if(!jobs.applications.includes(id)){
+		const allApplicationIds = jobs.flatMap(job => job.applications.map(appId => appId.toString()));
+		if(!allApplicationIds.includes(id)){
 			return res.status(401).json({message: "Not authorize to update application status."});
 		}
 		const updatedApplication = await Application.findByIdAndUpdate(id, {status}, {new: true});
